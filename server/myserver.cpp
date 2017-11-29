@@ -20,9 +20,9 @@ MyServer::MyServer(int nPort) :m_nNextBlockSize(0)
 
 /*virtual*/ void MyServer::slotNewConnection() {
     QTcpSocket* pClientSocket = m_ptcpServer->nextPendingConnection(); //conect signal with newConnection()
-    connect(pClientSocket, SIGNAL(disconnected()), //отсоединение
+    QObject::connect(pClientSocket, SIGNAL(disconnected()), //отсоединение
             pClientSocket, SLOT(deleteLater()));
-    connect(pClientSocket, SIGNAL(readyRead()),    //готовность
+    QObject::connect(pClientSocket, SIGNAL(readyRead()),    //готовность
             this,          SLOT(slotReadClient()));
 
     sendToClient(pClientSocket, "Server Response: Connected!");
