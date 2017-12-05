@@ -1,39 +1,42 @@
 #include "myserver.h"
 
-MyServer::MyServer(int nPort) :m_nNextBlockSize(0)
+QT_USE_NAMESPACE
+
+MyServer::MyServer(quint16 port, bool debug, QObject *parent) :
+    QObject(parent), m_nNextBlockSize(0), m_debug(debug)
 {
-    m_ptcpServer = new QTcpServer(this); // signals
 
+    m_pTcpSocket = new QTcpServer(this);
 
-    if (!m_ptcpServer->listen(QHostAddress::Any, nPort)) { //IP, port
-       qDebug() <<  QObject::tr("Unable to start the server: %1.").arg(m_ptcpServer->errorString());
-       m_ptcpServer->close();
-       return;
+    if (m_pTcpSocket->listen(QHostAddress::Any, port)) {
+        if (m_debug)
+            qDebug() << "Echoserver listening on port" << port;
+            connect(m_pTcpSocket, SIGNAL(newConnection()),
+                    this,         SLOT(slotNewConnection()));
+
     }
-
-    qDebug() << QString::fromUtf8("server run!");
-    connect(m_ptcpServer, SIGNAL(newConnection()),
-            this,         SLOT(slotNewConnection()));
-
-
 }
+//QObject::connect(&Отправитель,SIGNAL(mysignal()),&Адресат,SLOT(myslot()));
 
-/*virtual*/ void MyServer::slotNewConnection() {
-    QTcpSocket* pClientSocket = m_ptcpServer->nextPendingConnection(); //conect signal with newConnection()
+void MyServer::slotNewConnection() {
+    QTcpSocket* pClientSocket = m_pTcpSocket->nextPendingConnection(); //conect signal with newConnection()
+
+
     QObject::connect(pClientSocket, SIGNAL(disconnected()), //отсоединение
-            pClientSocket, SLOT(deleteLater()));
-    QObject::connect(pClientSocket, SIGNAL(readyRead()),    //готовность
-            this,          SLOT(slotReadClient()));
+                     pClientSocket, SLOT(deleteLater()));
 
-    sendToClient(pClientSocket, "Server Response: Connected!");
+    QObject::connect(pClientSocket, SIGNAL(readyRead()),    //готовность
+                     this,          SLOT  (game()));
+
 }
 
-void MyServer::slotReadClient()
-{
+QString MyServer::slotReadClient() {
+    QTcpSocket* pClientSocket = (QTcpSocket*)sender(); //преобразование типов
+    QDataStream in(pClientSocket);                     //преобразование типов
 
-    QTcpSocket* pClientSocket = (QTcpSocket*)sender();
-    QDataStream in(pClientSocket);
-    in.setVersion(QDataStream::Qt_4_2);
+    //in.setVersion(QDataStream::Qt_4_2);
+    QString str;
+
     for (;;) {                                      //чтение пакетов
         if (!m_nNextBlockSize) {
             if (pClientSocket->bytesAvailable() < sizeof(quint16)) {
@@ -47,21 +50,23 @@ void MyServer::slotReadClient()
         }
 
         QTime   time;
-        QString str;
 
-        in >> time >> str;
+
+        in >> time >> str; //time to str
 
         QString strMessage = time.toString() + " " + "Client has sended - " + str;
         qDebug() << QString(strMessage);
 
         m_nNextBlockSize = 0;
-        sendToClient(pClientSocket, "Server Response: Received \"" + str + "\"");
+        sendToClient(pClientSocket, "Chlen Server Response: Received \"" + str + "\"");
     }
+    return str;
 }
 
 void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
 {
 
+    std::cout << "MyServer::sendToClient()" << std::endl;
     QByteArray  arrBlock;
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_2);
@@ -71,4 +76,15 @@ void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
     out << quint16(arrBlock.size() - sizeof(quint16));
 
     pSocket->write(arrBlock);
+}
+
+void MyServer::game() {
+    QString strMessage = "smile";
+    std::cout << "MyServer::game()" << std::endl;
+    qDebug() << slotReadClient();
+
+    QTcpSocket* pClientSocket = (QTcpSocket*)sender();
+    QDataStream in(pClientSocket);
+
+    sendToClient(pClientSocket, "Server Response: Received" + strMessage);
 }
