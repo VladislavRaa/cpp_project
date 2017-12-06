@@ -30,7 +30,7 @@ void MyServer::slotNewConnection() {
 
 }
 
-QString MyServer::slotReadClient() {
+QString MyServer::slotReadClient(User player) {
     QTcpSocket* pClientSocket = (QTcpSocket*)sender(); //преобразование типов
     QDataStream in(pClientSocket);                     //преобразование типов
 
@@ -49,10 +49,10 @@ QString MyServer::slotReadClient() {
             break;
         }
 
-        QTime   time;
+        QTime time;
+        quint16 Score;
 
-
-        in >> time >> str; //time to str
+        in >> player ; //time  str
 
         QString strMessage = time.toString() + " " + "Client has sended - " + str;
         qDebug() << QString(strMessage);
@@ -79,9 +79,12 @@ void MyServer::sendToClient(QTcpSocket* pSocket, const QString& str)
 }
 
 void MyServer::game() {
+
+    User player;
+
     QString strMessage = "smile";
     std::cout << "MyServer::game()" << std::endl;
-    qDebug() << slotReadClient();
+    qDebug() << slotReadClient(player);
 
     QTcpSocket* pClientSocket = (QTcpSocket*)sender();
     QDataStream in(pClientSocket);

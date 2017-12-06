@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MyServer_t {
-    QByteArrayData data[10];
-    char stringdata0[92];
+    QByteArrayData data[12];
+    char stringdata0[104];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -39,13 +39,15 @@ QT_MOC_LITERAL(4, 30, 11), // "QTcpSocket*"
 QT_MOC_LITERAL(5, 42, 7), // "pSocket"
 QT_MOC_LITERAL(6, 50, 3), // "str"
 QT_MOC_LITERAL(7, 54, 14), // "slotReadClient"
-QT_MOC_LITERAL(8, 69, 17), // "slotNewConnection"
-QT_MOC_LITERAL(9, 87, 4) // "game"
+QT_MOC_LITERAL(8, 69, 4), // "User"
+QT_MOC_LITERAL(9, 74, 6), // "player"
+QT_MOC_LITERAL(10, 81, 17), // "slotNewConnection"
+QT_MOC_LITERAL(11, 99, 4) // "game"
 
     },
     "MyServer\0closed\0\0sendToClient\0QTcpSocket*\0"
-    "pSocket\0str\0slotReadClient\0slotNewConnection\0"
-    "game"
+    "pSocket\0str\0slotReadClient\0User\0player\0"
+    "slotNewConnection\0game"
 };
 #undef QT_MOC_LITERAL
 
@@ -67,16 +69,16 @@ static const uint qt_meta_data_MyServer[] = {
 
  // slots: name, argc, parameters, tag, flags
        3,    2,   40,    2, 0x0a /* Public */,
-       7,    0,   45,    2, 0x0a /* Public */,
-       8,    0,   46,    2, 0x0a /* Public */,
-       9,    0,   47,    2, 0x0a /* Public */,
+       7,    1,   45,    2, 0x0a /* Public */,
+      10,    0,   48,    2, 0x0a /* Public */,
+      11,    0,   49,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 4, QMetaType::QString,    5,    6,
-    QMetaType::QString,
+    QMetaType::QString, 0x80000000 | 8,    9,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -91,7 +93,7 @@ void MyServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         switch (_id) {
         case 0: _t->closed(); break;
         case 1: _t->sendToClient((*reinterpret_cast< QTcpSocket*(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 2: { QString _r = _t->slotReadClient();
+        case 2: { QString _r = _t->slotReadClient((*reinterpret_cast< User(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         case 3: _t->slotNewConnection(); break;
         case 4: _t->game(); break;

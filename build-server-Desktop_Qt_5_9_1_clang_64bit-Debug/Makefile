@@ -51,9 +51,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../server/main.cpp \
-		../server/myserver.cpp moc_myserver.cpp
+		../server/myserver.cpp \
+		../server/user.cpp moc_myserver.cpp
 OBJECTS       = main.o \
 		myserver.o \
+		user.o \
 		moc_myserver.o
 DIST          = ../../Qt/5.9.1/clang_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.9.1/clang_64/mkspecs/qdevice.pri \
@@ -238,8 +240,10 @@ DIST          = ../../Qt/5.9.1/clang_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.9.1/clang_64/mkspecs/features/exceptions.prf \
 		../../Qt/5.9.1/clang_64/mkspecs/features/yacc.prf \
 		../../Qt/5.9.1/clang_64/mkspecs/features/lex.prf \
-		../server/server.pro ../server/myserver.h ../server/main.cpp \
-		../server/myserver.cpp
+		../server/server.pro ../server/myserver.h \
+		../server/user.h ../server/main.cpp \
+		../server/myserver.cpp \
+		../server/user.cpp
 QMAKE_TARGET  = server
 DESTDIR       = 
 TARGET        = server
@@ -644,8 +648,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../Qt/5.9.1/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../server/myserver.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../server/main.cpp ../server/myserver.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../server/myserver.h ../server/user.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../server/main.cpp ../server/myserver.cpp ../server/user.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -690,6 +694,7 @@ moc_myserver.cpp: ../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QCommandL
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatastream.h \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QTime \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../server/user.h \
 		../server/myserver.h \
 		moc_predefs.h \
 		../../Qt/5.9.1/clang_64/bin/moc
@@ -719,7 +724,8 @@ main.o: ../server/main.cpp ../server/myserver.h \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QDataStream \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatastream.h \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QTime \
-		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatetime.h
+		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../server/user.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../server/main.cpp
 
 myserver.o: ../server/myserver.cpp ../server/myserver.h \
@@ -732,8 +738,14 @@ myserver.o: ../server/myserver.cpp ../server/myserver.h \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QDataStream \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatastream.h \
 		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QTime \
-		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatetime.h
+		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
+		../server/user.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o myserver.o ../server/myserver.cpp
+
+user.o: ../server/user.cpp ../server/user.h \
+		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QDataStream \
+		../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdatastream.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o user.o ../server/user.cpp
 
 moc_myserver.o: moc_myserver.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_myserver.o moc_myserver.cpp
